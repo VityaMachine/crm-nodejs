@@ -70,7 +70,7 @@ class Server {
       swaggerUi.setup(swaggerFile, {
         swaggerOptions: {
           requestInterceptor: function (request) {
-            request.headers.Origin = `https://crm-nodejs.herokuapp.com/`;
+            request.headers.Origin = `https://crm-nodejs.herokuapp.com`;
             return request;
           },
           url: `https://crm-nodejs.herokuapp.com/api-docs`,
