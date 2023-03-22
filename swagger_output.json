@@ -5,7 +5,7 @@
     "title": "REST API",
     "description": ""
   },
-  "host": "https://crm-nodejs.herokuapp.com",
+  "host": "crm-nodejs.herokuapp.com",
   "basePath": "/",
   "securityDefinitions": {
     "Authorization": {
