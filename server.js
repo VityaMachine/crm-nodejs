@@ -43,7 +43,7 @@ class Server {
     const formatsLogger =
       this.server.get("env") === "development" ? "dev" : "short";
     this.server.use(logger(formatsLogger));
-    this.server.use(cors());
+    // this.server.use(cors());
     this.server.use(express.json());
   }
 
