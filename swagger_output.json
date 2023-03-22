@@ -15,7 +15,7 @@
       "description": "Authentication token"
     }
   },
-  "schemes": ["http"],
+  "schemes": ["https"],
   "paths": {
     "/api/auth/sign-up": {
       "post": {
