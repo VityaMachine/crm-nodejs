@@ -1,0 +1,1144 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "REST API",
+    "description": ""
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "securityDefinitions": {
+    "Authorization": {
+      "type": "apiKey",
+      "name": "authorization",
+      "in": "header",
+      "description": "Authentication token"
+    }
+  },
+  "schemes": ["http"],
+  "paths": {
+    "/api/auth/sign-up": {
+      "post": {
+        "description": "Sign-up new user. Default role moderator",
+        "tags": ["Auth"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "username"
+                },
+                "password": {
+                  "example": "password (must include 1 uppercase, 1 number, 1 special [!@#$%^&*]. Min length 8 symbols)"
+                },
+                "email": {
+                  "example": "user@mail.com"
+                },
+                "firstName": {
+                  "example": "Jack"
+                },
+                "secondName": {
+                  "example": "Sparrow"
+                },
+                "birthdate": {
+                  "example": "date in format YYYY-MM-DD (non required)"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/auth/sign-in": {
+      "post": {
+        "description": "Sign-in user. Response giving you auth token, that can be used in auth header",
+        "tags": ["Auth"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "username"
+                },
+                "password": {
+                  "example": "user password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "patch": {
+        "description": "Logout user. Clear tocken in Database. Working only if user authorized",
+        "tags": ["Auth"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+
+    "/api/user/role": {
+      "patch": {
+        "description": "Only for 'administrator' users. Route for changing user role",
+        "tags": ["Users"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "username for role change"
+                },
+                "new_role": {
+                  "example": "new role (administrator, moderator, user)"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user/password": {
+      "patch": {
+        "description": "change loggined user password",
+        "tags": ["Users"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "oldPassword": {
+                  "example": "old password"
+                },
+                "newPassword": {
+                  "example": "new password (must include 1 uppercase, 1 number, 1 special [!@#$%^&*]. Min length 8 symbols)"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/user/current": {
+      "get": {
+        "description": "Get loggined user",
+        "tags": ["Users"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/user/all": {
+      "get": {
+        "description": "Only for 'administrator' users. Get all users array",
+        "tags": ["Users"],
+
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+
+    "/api/user/name/{username}": {
+      "get": {
+        "description": "Only for 'administrator' users. Get selected user by name",
+        "tags": ["Users"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/user/id/{id}": {
+      "get": {
+        "description": "Only for 'administrator' users. Get selected user by ID",
+        "tags": ["Users"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+
+    "/api/restaurant/": {
+      "post": {
+        "description": "Add new restaurant product. Only for moderators and administrators",
+        "tags": ["Restaurant"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productName": {
+                  "example": "productName"
+                },
+                "productWeiht": {
+                  "example": 1000
+                },
+                "ingredients": {
+                  "example": "Ingredients list string"
+                },
+                "productPrice": {
+                  "example": 50
+                },
+                "productImageUrl": {
+                  "example": "http://www.imageserver.com/image_path.jpg"
+                },
+                "keywords": {
+                  "example": "Few keywords about product"
+                },
+                "quantity": {
+                  "example": 5
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "get": {
+        "description": "Get all restaurant products array",
+        "tags": ["Restaurant"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/restaurant/q=": {
+      "get": {
+        "description": "Get restaurant product by query. Possible parasm: productName, keywords, ingrediends",
+        "tags": ["Restaurant"],
+        "parameters": [
+          {
+            "name": "productName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ingrediends",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/restaurant/{productUUID}": {
+      "get": {
+        "description": "Get one restaurant product by uuid",
+        "tags": ["Restaurant"],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update restaurant product data by uuid. No one property is required. Only for moderators and administrators",
+        "tags": ["Restaurant"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productName": {
+                  "example": "Updated name"
+                },
+                "productWeiht": {
+                  "example": "Updated weight (nubmer value)"
+                },
+                "ingredients": {
+                  "example": "Updated ingredients string"
+                },
+                "productPrice": {
+                  "example": "Updated price (nubmer value)"
+                },
+                "productImageUrl": {
+                  "example": "Updated image url"
+                },
+                "keywords": {
+                  "example": "Updated keywords string"
+                },
+                "quantity": {
+                  "example": "Updated quantity (nubmer value)"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete restaurant product by uuid. Only for moderators and administrators",
+        "tags": ["Restaurant"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+
+    "/api/store/": {
+      "post": {
+        "description": "Add new store product. Only for moderators and administrators",
+        "tags": ["Store"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productName": {
+                  "example": "productName"
+                },
+                "productPrice": {
+                  "example": 50
+                },
+                "productImageUrl": {
+                  "example": "http://www.imageserver.com/image_path.jpg"
+                },
+                "productDescription": {
+                  "example": "Little product description "
+                },
+
+                "keywords": {
+                  "example": "Few keywords about product"
+                },
+                "quantity": {
+                  "example": 5
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "get": {
+        "description": "Get all store products array",
+        "tags": ["Store"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/store/q=": {
+      "get": {
+        "description": "Get store product by query. Possible parasm: productName, keywords",
+        "tags": ["Store"],
+        "parameters": [
+          {
+            "name": "productName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/store/{productUUID}": {
+      "get": {
+        "description": "Get one store product by uuid",
+        "tags": ["Store"],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update store product data by uuid. No one property is required. Only for moderators and administrators",
+        "tags": ["Store"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productName": {
+                  "example": "Updated name"
+                },
+                "productPrice": {
+                  "example": "Updated price (nubmer value)"
+                },
+                "productImageUrl": {
+                  "example": "Updated image url"
+                },
+                "productDescription": {
+                  "example": "Updated description"
+                },
+                "keywords": {
+                  "example": "Updated keywords string"
+                },
+                "quantity": {
+                  "example": "Updated quantity (nubmer value)"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete store product by uuid. Only for moderators and administrators",
+        "tags": ["Store"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+
+    "/api/video/": {
+      "post": {
+        "description": "Add new video product. Only for moderators and administrators",
+        "tags": ["Video"],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productName": {
+                  "example": "productName"
+                },
+                "productLink": {
+                  "example": "http://www.videoserver.com/video_name.mkv"
+                },
+                "productImageUrl": {
+                  "example": "http://www.imageserver.com/image_path.jpg"
+                },
+                "productDescription": {
+                  "example": "Little product description "
+                },
+
+                "keywords": {
+                  "example": "Few keywords about product"
+                }
+              }
+            }
+          }
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "get": {
+        "description": "Get all video products array",
+        "tags": ["Video"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/video/q=": {
+      "get": {
+        "description": "Get video product by query. Possible parasm: productName, keywords",
+        "tags": ["Video"],
+        "parameters": [
+          {
+            "name": "productName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/video/{productUUID}": {
+      "get": {
+        "description": "Get one video product by uuid",
+        "tags": ["Video"],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "description": "Update video product data by uuid. No one property is required. Only for moderators and administrators",
+        "tags": ["Video"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "productName": {
+                  "example": "Updated name"
+                },
+                "productLink": {
+                  "example": "Updated price (nubmer value)"
+                },
+                "productImageUrl": {
+                  "example": "Updated image url"
+                },
+                "productDescription": {
+                  "example": "Updated description"
+                },
+                "keywords": {
+                  "example": "Updated keywords string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete video product by uuid. Only for moderators and administrators",
+        "tags": ["Video"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productUUID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "required": ["username", "password", "email", "firstName"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "autofill": true,
+          "autoincrement": true,
+          "example": 1
+        },
+        "username": {
+          "type": "string",
+          "example": "UserLogin"
+        },
+        "password": {
+          "type": "string",
+          "example": "Str0()ng_P@ssw0rd"
+        },
+        "token": {
+          "type": "JSONWebToken",
+          "details": "set in DB after sign-in operation"
+        },
+        "email": {
+          "type": "email",
+          "example": "user@mail.com"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "Peter"
+        },
+        "secondName": {
+          "type": "string",
+          "example": "Parker"
+        },
+        "birthdate": {
+          "type": "string",
+          "example": "1990-01-01"
+        },
+        "user_role": {
+          "type": "string",
+          "defaultValue": "moderator",
+          "details": "only administrator can change value"
+        }
+      }
+    },
+    "Restaurant": {
+      "required": [
+        "productName",
+        "productWeiht",
+        "ingredients",
+        "productPrice",
+        "keywords"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "autofill": true,
+          "autoincrement": true,
+          "example": 1
+        },
+        "uuid": {
+          "type": "uuid",
+          "autofill": true,
+          "example": "9dde756a-2074-405d-9a83-f85d32b82f66"
+        },
+        "productName": {
+          "type": "string",
+          "example": "Antipasto Potato Salad"
+        },
+        "productWeiht": {
+          "type": "float",
+          "example": 500
+        },
+        "ingredients": {
+          "type": "string",
+          "example": "Gold potatoes, olive oil, clove garlic, wine vinegar"
+        },
+        "productPrice": {
+          "type": "float",
+          "example": 100
+        },
+        "productImageUrl": {
+          "type": "string",
+          "example": "http://www.imageserver.com/image_path.jpg"
+        },
+        "keywords": {
+          "type": "string",
+          "example": "Potato, Salad"
+        },
+        "quantity": {
+          "type": "integer",
+          "defaultValue": 0,
+          "example": 200
+        },
+        "stopList": {
+          "type": "boolean",
+          "defaultValue": true
+        },
+        "postedUser": {
+          "type": "string",
+          "example": "username"
+        },
+        "updatedUser": {
+          "type": "string",
+          "example": "username"
+        }
+      }
+    },
+    "Store": {
+      "required": [
+        "productName",
+        "productDescription",
+        "ingredients",
+        "productPrice",
+        "keywords"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "autofill": true,
+          "autoincrement": true,
+          "example": 1
+        },
+        "uuid": {
+          "type": "uuid",
+          "autofill": true,
+          "example": "9dde756a-2074-405d-9a83-f85d32b82f66"
+        },
+        "productName": {
+          "type": "string",
+          "example": "Apple MacBook Pro 16 M1 Pro 512GB 2021"
+        },
+        "productDescription": {
+          "type": "string",
+          "example": "The new MacBook Pro is revolutionary power for professionals."
+        },
+        "productPrice": {
+          "type": "float",
+          "example": 93999
+        },
+        "productImageUrl": {
+          "type": "string",
+          "example": "http://www.imageserver.com/image_path.jpg"
+        },
+        "keywords": {
+          "type": "string",
+          "example": "Laptop, Apple"
+        },
+        "quantity": {
+          "type": "integer",
+          "defaultValue": 0,
+          "example": 1000
+        },
+        "stopList": {
+          "type": "boolean",
+          "defaultValue": true
+        },
+        "postedUser": {
+          "type": "string",
+          "example": "username"
+        },
+        "updatedUser": {
+          "type": "string",
+          "example": "username"
+        }
+      }
+    },
+    "Video": {
+      "required": [
+        "productName",
+        "productDescription",
+        "ingredients",
+        "productPrice",
+        "keywords"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "autofill": true,
+          "autoincrement": true,
+          "example": 1
+        },
+        "uuid": {
+          "type": "uuid",
+          "autofill": true,
+          "example": "9dde756a-2074-405d-9a83-f85d32b82f66"
+        },
+        "productName": {
+          "type": "string",
+          "example": "Iron Man"
+        },
+        "productDescription": {
+          "type": "string",
+          "example": "ron Man is a 2008 American superhero film based on the Marvel Comics character of the same name. Produced by Marvel Studios and distributed by Paramount Pictures,"
+        },
+        "productLink": {
+          "type": "string",
+          "example": "http://www.videoserver.com/videoname_path.mkv"
+        },
+        "productImageUrl": {
+          "type": "string",
+          "example": "http://www.imageserver.com/image_path.jpg"
+        },
+        "keywords": {
+          "type": "string",
+          "example": "Iron Man, Marvel"
+        },
+        "stopList": {
+          "type": "boolean",
+          "defaultValue": true
+        },
+        "postedUser": {
+          "type": "string",
+          "example": "username"
+        },
+        "updatedUser": {
+          "type": "string",
+          "example": "username"
+        }
+      }
+    }
+  }
+}
