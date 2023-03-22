@@ -42,15 +42,18 @@ class Server {
     const formatsLogger =
       this.server.get("env") === "development" ? "dev" : "short";
     this.server.use(logger(formatsLogger));
-    this.server.use(cors());
+    this.server.use(
+      // cors({ origin: `${process.env.BASE_URL}/` })
+      cors({})
+    );
     this.server.use(express.json());
 
-    this.server.use(function(req, res, next) {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE');
-      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-      next();
-    });
+    // this.server.use(function(req, res, next) {
+    //   res.header('Access-Control-Allow-Origin', '*');
+    //   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE');
+    //   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    //   next();
+    // });
 
   }
 
