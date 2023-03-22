@@ -19,7 +19,6 @@ const restaurantRouter = require("./src/api/routers/restaurant.router");
 const storeRouter = require("./src/api/routers/store.router");
 const videoRouter = require("./src/api/routers/video.router");
 
-
 /* Class version */
 class Server {
   constructor() {
@@ -43,10 +42,7 @@ class Server {
     const formatsLogger =
       this.server.get("env") === "development" ? "dev" : "short";
     this.server.use(logger(formatsLogger));
-    this.server.use(cors({
-      origin: "https://https//crm-nodejs.herokuapp.com", 
-      credentials: true,
-  }));
+    this.server.use(cors({}));
     this.server.use(express.json());
   }
 
