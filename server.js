@@ -54,7 +54,6 @@ class Server {
     //   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
     //   next();
     // });
-
   }
 
   initSequelizeModels() {
@@ -65,7 +64,19 @@ class Server {
   }
 
   initRoutes() {
-    this.server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+    this.server.use(
+      "/api-docs",
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerFile, {
+        swaggerOptions: {
+          requestInterceptor: function (request) {
+            request.headers.Origin = `https://crm-nodejs.herokuapp.com/`;
+            return request;
+          },
+          url: `https://crm-nodejs.herokuapp.com/api-docs`,
+        },
+      })
+    );
 
     this.server.use("/api/auth/", authRouter);
     this.server.use("/api/user/", userRouter);
