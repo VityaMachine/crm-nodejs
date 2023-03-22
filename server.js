@@ -46,8 +46,9 @@ class Server {
     this.server.use(express.json());
 
     this.server.use(function(req, res, next) {
-      res.header("Access-Control-Allow-Origin", "https://crm-nodejs.herokuapp.com"); // update to match the domain you will make the request from
-      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
       next();
     });
 
