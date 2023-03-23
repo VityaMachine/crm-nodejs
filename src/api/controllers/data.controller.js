@@ -26,6 +26,7 @@ class DataController {
         ...req.body,
         uuid: uuidv4(),
         postedUser: user.username,
+        stopList: req.body.quantity > 0 ? false : true,
       };
 
       let result;
@@ -184,8 +185,7 @@ class DataController {
 
       let oldProduct;
 
-
-      if(originUrl.includes('restaurant')) {
+      if (originUrl.includes("restaurant")) {
         oldProduct = await RestaurantModel.findOne({
           where: {
             uuid: productId,
@@ -193,7 +193,7 @@ class DataController {
         });
       }
 
-      if(originUrl.includes('store')) {
+      if (originUrl.includes("store")) {
         oldProduct = await StoreModel.findOne({
           where: {
             uuid: productId,
@@ -201,7 +201,7 @@ class DataController {
         });
       }
 
-      if(originUrl.includes('video')) {
+      if (originUrl.includes("video")) {
         oldProduct = await VideoModel.findOne({
           where: {
             uuid: productId,
@@ -307,8 +307,7 @@ class DataController {
 
       let oldProduct;
 
-
-      if(originUrl.includes('restaurant')) {
+      if (originUrl.includes("restaurant")) {
         oldProduct = await RestaurantModel.findOne({
           where: {
             uuid: productId,
@@ -316,7 +315,7 @@ class DataController {
         });
       }
 
-      if(originUrl.includes('store')) {
+      if (originUrl.includes("store")) {
         oldProduct = await StoreModel.findOne({
           where: {
             uuid: productId,
@@ -324,7 +323,7 @@ class DataController {
         });
       }
 
-      if(originUrl.includes('video')) {
+      if (originUrl.includes("video")) {
         oldProduct = await VideoModel.findOne({
           where: {
             uuid: productId,
@@ -372,7 +371,6 @@ class DataController {
           },
         });
       }
-
 
       return res.status(204).send();
     } catch (error) {
